@@ -1,27 +1,36 @@
-import React from 'react'
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route
-} from 'react-router-dom';
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
+import AuthContext from "../auth/AuthContext";
 // import DcScreen from '../components/dc/DcScreen';
-import LoginScreen from '../components/login/LoginScreen';
-import DashBoardRoutes from './DashBoardRoutes';
+import LoginScreen from "../components/login/LoginScreen";
+import DashBoardRoutes from "./DashBoardRoutes";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 // import MarvelScreen from '../components/marvel/MarvelScreen';
 
 const AppRouter = () => {
-    return (
-        <Router>
-            <div>
-                {/* <Navbar /> */}
+  const { user } = useContext(AuthContext);
 
-                <Switch>
-                    <Route exact path="/login" component={ LoginScreen } />
-                    <Route path="/" component={ DashBoardRoutes } />
-                </Switch>
-            </div>
-        </Router>
-    )
-}
+  return (
+    <Router>
+      <div>
+        <Switch>
+          <PublicRoute 
+            exact 
+            path="/login" 
+            component={LoginScreen} 
+            isAuthenticated={user.logged}
+          />
 
-export default AppRouter
+          <PrivateRoute
+            path="/"
+            component={DashBoardRoutes}
+            isAuthenticated={user.logged}
+          />
+        </Switch>
+      </div>
+    </Router>
+  );
+};
+
+export default AppRouter;
